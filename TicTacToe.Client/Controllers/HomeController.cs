@@ -3,11 +3,18 @@
     using System;
     using System.Linq;
     using System.Web.Mvc;
+    using System.Collections.Generic;
+
+    using Microsoft.AspNet.Identity;
+
     using TicTacToe.Data;
     using AutoMapper.QueryableExtensions;
     using Models;
-    using System.Collections;
-    using System.Collections.Generic;
+    using System.Net;
+    using Common;
+    using TicTacToe.Models;
+    using System.IO;
+    using System.Web.Script.Serialization;
 
     public class HomeController : BaseController
     {
@@ -23,12 +30,15 @@
 
         }
 
+        [AllowAnonymous]
         public ActionResult Index()
         {
             IEnumerable<GameInfoDataModel> games = this.data.Games
                         .All()
                         .ProjectTo<GameInfoDataModel>()
                         .ToList();
+
+            ViewBag.FirstPlayerName = this.User.Identity.GetUserName();
 
             return View(games);
         }
