@@ -10,6 +10,7 @@
     using AutoMapper.QueryableExtensions;
     using Models;
     using Common;
+    using Hubs;
 
     public class GameController : BaseController
     {
@@ -21,6 +22,7 @@
             : base(data)
         { }
 
+        [HttpGet]
         public ActionResult List()
         {
             IEnumerable<GameInfoDataModel> games = this.data.Games
@@ -28,36 +30,10 @@
                             .ProjectTo<GameInfoDataModel>()
                             .ToList();
 
-            ViewBag.FirstPlayerName = this.User.Identity.GetUserName();
+            ViewBag.CurrentUserName = this.User.Identity.GetUserName();
+            ViewBag.UserAccessToken = this.GetUserAccessToken();
 
             return View(games);
         }
-        
-        public ActionResult CreateNewGame()
-        {
-            var currentUserName = this.User.Identity.GetUserName();
-            var userAccessToken = this.data.Tokens
-                                    .All()
-                                    .Where(t => t.UserName == currentUserName)
-                                    .Select(t => t.AccessToken)
-                                    .FirstOrDefault();
-
-            ViewBag.GameId = this.GameResponse(userAccessToken, GlobalConstants.CreateNewGameServiceUri, null);
-
-            return RedirectToAction("List");
-        }
-        
-        //public ActionResult Join()
-        //{
-        //    var currentUserName = this.User.Identity.GetUserName();
-        //    var userAccessToken = this.data.Tokens
-        //                            .All()
-        //                            .Where(t => t.UserName == currentUserName)
-        //                            .Select(t => t.AccessToken)
-        //                            .FirstOrDefault();
-        //    //ViewBag.GameId = this.GameResponse(userAccessToken, "/api/games/join");
-
-        //    return RedirectToAction("Index");
-        //}
     }
 }

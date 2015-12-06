@@ -1,8 +1,10 @@
 ﻿namespace TicTacToe.Client.Controllers
 {
     using System.Web.Mvc;
-    using System.Net;
+    using System.Linq;
     using System.IO;
+
+    using Microsoft.AspNet.Identity;
 
     using Data;
     using Common;
@@ -17,11 +19,16 @@
             this.data = data;
         }
 
-        protected string GameResponse(string userAccessToken, string servicePath, string postData)
+        protected string GetUserAccessToken()
         {
-            var response = HttpWebRequester.Create(userAccessToken, servicePath, postData);
+            var currentUserName = this.User.Identity.GetUserName();
+            var userAccessToken = this.data.Tokens
+                                    .All()
+                                    .Where(t => t.UserName == currentUserName)
+                                    .Select(t => t.AccessToken)
+                                    .FirstOrDefault();
 
-            return new StreamReader(response.GetResponseStream()).ReadToEnd();
+            return userAccessToken;
         }
     }
 }

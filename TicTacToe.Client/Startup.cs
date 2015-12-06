@@ -9,6 +9,7 @@ namespace TicTacToe.Client
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            app.MapSignalR();
         }
     }
 }
