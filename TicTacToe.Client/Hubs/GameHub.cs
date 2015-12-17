@@ -10,7 +10,7 @@
     {
         public void Join(string userAccessToken, string gameId, string secondPlayerName)
         {
-            var response = HttpWebRequester.Create(userAccessToken, GlobalConstants.JoinServiceUri, null);
+            var response = HttpWebRequester.CreatePOST(userAccessToken, GlobalConstants.JoinServiceUri, null);
 
             var responseAsString =  new StreamReader(response.GetResponseStream()).ReadToEnd();
             if (gameId.CompareTo(responseAsString.Trim('\"')) == 0)
@@ -25,7 +25,7 @@
 
         public void CreateNewGame(string userAccessToken)
         {
-            var response = HttpWebRequester.Create(userAccessToken, GlobalConstants.CreateNewGameServiceUri, null);
+            var response = HttpWebRequester.CreatePOST(userAccessToken, GlobalConstants.CreateNewGameServiceUri, null);
 
             var gameId = new StreamReader(response.GetResponseStream()).ReadToEnd().Trim('\"');
 

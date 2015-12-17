@@ -11,5 +11,7 @@
         public const string CreateNewGameServiceUri = "/api/games/create";
 
         public const string JoinUnsuccessfull = "Join unsuccessfull!";
+
+        public const string StatusServiceUri = "/api/games/status";
     }
 }

@@ -3,14 +3,14 @@
     using System.Linq;
     using System.Web.Mvc;
     using System.Collections.Generic;
+    using System.IO;
 
     using Microsoft.AspNet.Identity;
 
-    using TicTacToe.Data;
+    using Data;
     using AutoMapper.QueryableExtensions;
     using Models;
     using Common;
-    using Hubs;
 
     public class GameController : BaseController
     {
@@ -34,6 +34,20 @@
             ViewBag.UserAccessToken = this.GetUserAccessToken();
 
             return View(games);
+        }
+
+        [HttpGet]
+        public JsonResult Status(string gameId, string userAccessToken)
+        {
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Authorization", "Bearer " + userAccessToken);
+
+            string requestUri = GlobalConstants.ServerUri + GlobalConstants.StatusServiceUri + "?gameId=" + gameId;
+            var response = HttpWebRequester.CreateGET(requestUri, headers);
+
+            var responseAsString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
+            return Json(responseAsString, JsonRequestBehavior.AllowGet);
         }
     }
 }

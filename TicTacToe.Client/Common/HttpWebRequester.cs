@@ -1,11 +1,12 @@
 ﻿namespace TicTacToe.Client.Common
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
 
     public class HttpWebRequester
     {
-        public static WebResponse Create(string userAccessToken, string servicePath, string postData)
+        public static WebResponse CreatePOST(string userAccessToken, string servicePath, string postData)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(GlobalConstants.ServerUri + servicePath);
             request.Method = "POST";
@@ -18,6 +19,24 @@
             streamWriter.Close();
 
             return request.GetResponse();
+        }
+
+        public static WebResponse CreateGET(string requestUriString, Dictionary<string, string> headers)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUriString);
+            foreach (var header in headers)
+            {
+                request.Headers.Add(header.Key, header.Value);
+            }
+            
+            try
+            {
+                return request.GetResponse();
+            }
+            catch(WebException exc)
+            {
+                return exc.Response;
+            }
         }
     }
 }
